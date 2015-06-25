@@ -15,6 +15,12 @@ from horizon import tables
 from horizon.templatetags import sizeformat
 from django.utils.translation import ugettext_lazy as _
 
+class HostLogsAction(tables.LinkAction):
+    name = "host_logs"
+    verbose_name = _("View Logs")
+    url = 'horizon:goldstone:logs:filtered_index'
+    icon = "camera"
+
 
 class ResourceTable(tables.DataTable):
     hostname = tables.Column("hypervisor_hostname",
@@ -55,10 +61,10 @@ class ResourceTable(tables.DataTable):
                                 verbose_name=_("Instances"))
 
     def get_object_id(self, hypervisor):
-        return "%s_%s" % (hypervisor['id'],
-                          hypervisor['hypervisor_hostname'])
+        return "%s" % (hypervisor['hypervisor_hostname'])
 
     class Meta(object):
         name = "resources"
         verbose_name = _("Resources")
+        row_actions = (HostLogsAction,)
 

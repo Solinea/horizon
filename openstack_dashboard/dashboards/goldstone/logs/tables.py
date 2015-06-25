@@ -16,7 +16,13 @@ from horizon.templatetags import sizeformat
 from django.utils.translation import ugettext_lazy as _
 
 class MyFilterAction(tables.FilterAction):
-    name = "myfilter"
+    param_name = 'logs_filter'
+    filter_type = 'server'
+    filter_choices = (('message', _("Message"), True),
+                      ('syslog_severity', _("Severity"), True),
+                      ('component', _("Component"), True),
+                      ('host', _("Host"), True))
+
 
 class LogsTable(tables.DataTable):
     hostname = tables.Column("@timestamp",

@@ -8,4 +8,5 @@ from openstack_dashboard.dashboards.goldstone.logs.views \
 urlpatterns = patterns(
     '',
     url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^(?P<resource_id>[^/]+)$', IndexView.as_view(), name='filtered_index'),
 )

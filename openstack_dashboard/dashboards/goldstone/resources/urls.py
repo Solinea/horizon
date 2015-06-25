@@ -5,5 +5,6 @@ from openstack_dashboard.dashboards.goldstone.resources import views
 
 
 urlpatterns = patterns(
-    '', url(r'^$', views.IndexView.as_view(), name='index'),
+    '',
+    url(r'^$', views.IndexView.as_view(), name='index'),
 )
