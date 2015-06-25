@@ -17,8 +17,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import tabs
 
-from openstack_dashboard import api
-from openstack_dashboard.dashboards.goldstone.resources import tables
+from openstack_dashboard.dashboards.goldstone.logs import tables
 
 import requests
 import json
@@ -27,10 +26,10 @@ import logging
 LOG = logging.getLogger(__name__)
 
 
-class ResourcesTab(tabs.TableTab):
-    name = _("Resources Tab")
-    slug = "resources_tab"
-    table_classes = (tables.ResourceTable,)
+class LogsTab(tabs.TableTab):
+    name = _("Logs Tab")
+    slug = "logs_tab"
+    table_classes = (tables.LogsTable,)
     template_name = ("horizon/common/_detail_table.html")
     preload = False
 
@@ -45,8 +44,10 @@ class ResourcesTab(tabs.TableTab):
         else:
             return None
 
-    def get_goldstone_hypervisors(
-            self, token, url='http://127.0.0.1:8000/nova/hypervisors/'):
+    def get_goldstone_logs(
+            self, token,
+            query_filter=None,
+            url='http://127.0.0.1:8000/logging/search/'):
 
         headers = {'Authorization': 'Token ' + token}
         response = requests.get(url, headers=headers)
@@ -56,18 +57,18 @@ class ResourcesTab(tabs.TableTab):
         else:
             return None
 
-    def get_resources_data(self):
+    def get_logs_data(self):
         try:
             token = self.authenticate_goldstone()
-            hypervisors = self.get_goldstone_hypervisors(token)
-            return hypervisors[0]
+            logs = self.get_goldstone_logs(token)
+            return logs['results']
         except Exception:
-            error_message = _('Unable to get hypervisors')
+            error_message = _('Unable to get logs')
             exceptions.handle(self.request, error_message)
 
             return []
 
-class ResourcesTabs(tabs.TabGroup):
-    slug = "resources_tabs"
-    tabs = (ResourcesTab,)
+class LogsTabs(tabs.TabGroup):
+    slug = "logs_tabs"
+    tabs = (LogsTab,)
     sticky = True
